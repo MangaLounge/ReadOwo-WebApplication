@@ -15,15 +15,16 @@
         <input type="text" v-model="book.publishedAt" required />
       </div>
       <div class="form-group">
+        <label>Language:</label>
+        <input type="text" v-model="book.language" required />
+      </div>
+      <div class="form-group">
+        <label>Saga:</label>
+        <input type="text" v-model="book.saga" required />
+      </div>
+      <div class="form-group">
         <label>Photo Url:</label>
         <input type="text" v-model="book.thumbnailUrl" required />
-      </div>
-      <div class="form-group genres-group">
-        <label>Genre:</label>
-        <select v-model="selectedGenreId" required class="select-genre">
-          <option value="">Select Genre</option>
-          <option v-for="genre in genres" :key="genre.id" :value="genre.id">{{ genre.name.toUpperCase() }}</option>
-        </select>
       </div>
       <button type="submit" class="create-button">PUBLISH</button>
     </form>
@@ -45,41 +46,22 @@ export default {
         synopsis: "",
         publishedAt: "",
         thumbnailUrl : "",
-        profileId: "",
-        bookStatusId: 1,
-        sagaId: 1,
-        languageId: 1
-      },
-      bookGenre: {
-        bookId: "",
-        genreId: ""
-      },
-      genres: [],
-      selectedGenreId: ""
+        userProfileId: "",
+        saga: "",
+        language: ""
+      }
     };
   },
   async created() {
     this.bookService = new BookService();
     this.bookGenreService = new BookGenreService();
-    this.genreService = new GenreService();
-    await this.getGenres();
   },
   methods:{
     async create(){
-      this.book.profileId = this.profile.id
+      this.book.userProfileId = this.profile.id
       const response = await this.bookService.create(this.book);
       const bookId = response.data.id;
-      await this.createBookGenre(bookId, this.selectedGenreId);
       this.toPublish();
-    },
-    async getGenres(){
-      const response = await this.genreService.getAll();
-      this.genres = response.data;
-    },
-    async createBookGenre(bookId, genreId){
-      this.bookGenre.genreId = genreId;
-      this.bookGenre.bookId = bookId;
-      await this.bookGenreService.create(this.bookGenre);
     },
     toPublish(){
       this.$router.push("/publish");

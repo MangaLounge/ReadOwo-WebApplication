@@ -10,7 +10,6 @@
           <tr>
             <th><p>PHOTO</p></th>
             <th><p>TITLE</p></th>
-            <th><p>NUMBER OF CHAPTERS</p></th>
             <th><p>PUBLICATION DATE</p></th>
             <th><p>ACTIONS</p></th>
           </tr>
@@ -19,7 +18,6 @@
           <tr v-for="(book, index) in publishedBooks" :key="index">
             <td><img class="img-container" :src="book.booksImage" :alt="book.booksTitle" @click="showBookInfo(book)"></td>
             <td>{{ book.booksTitle }}</td>
-            <td>{{ book.chaptersNumber }}</td>
             <td>{{ book.booksDate }}</td>
             <td>
               <pv-button
@@ -48,34 +46,28 @@ export default {
                 booksImage: "",
                 booksTitle: "",
                 booksDate: "",
-                chaptersNumber: 0
             }
         };
     },
     async created() {
         this.bookService = new BookService();
-        this.chapterService = new ChapterService()
         await this.getPublishedBooks();
     },
     methods: {
         async getPublishedBooks() {
-            let responseBook = await this.bookService.getAll();
-            let responseChapter = await this.chapterService.getAll();
-            for (let bookAux of responseBook.data) {
-                if (this.profile.id === bookAux.profileId) {
+          let responseBook = await this.bookService.getAll();
+          console.log("Response from BookService:", responseBook);
+          for (let bookAux of responseBook.data) {
+                if (this.profile.id === bookAux.id) {
+                  console.log("Book belongs to user:", bookAux);
                     this.book = {
                         booksId : bookAux.id,
                         booksImage: bookAux.thumbnailUrl,
                         booksTitle: bookAux.title,
-                        booksDate: bookAux.publishedAt,
-                        chaptersNumber: 0
+                        booksDate: bookAux.publishedAt
                     };
-                    for (let chapterAux of responseChapter.data) {
-                        if (bookAux.id === chapterAux.book.id) {
-                            this.book.chaptersNumber += 1;
-                        }
-                    }
                     this.publishedBooks.push(this.book);
+                  console.log("Filtered books for user:", this.publishedBooks);
                 }
             }
         },
