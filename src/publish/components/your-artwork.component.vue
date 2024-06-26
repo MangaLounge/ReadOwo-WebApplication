@@ -58,7 +58,7 @@ export default {
           let responseBook = await this.bookService.getAll();
           console.log("Response from BookService:", responseBook);
           for (let bookAux of responseBook.data) {
-                if (this.profile.id === bookAux.id) {
+                if (this.profile.id === bookAux.userProfile.id) {
                   console.log("Book belongs to user:", bookAux);
                     this.book = {
                         booksId : bookAux.id,
