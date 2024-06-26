@@ -5,9 +5,7 @@ const router = createRouter({
     routes: [
         {
             path: '/',
-            name: 'home',
-            component: () => import('./publish/components/main-content.component.vue'),
-            meta: { requiresAuth: true }
+            redirect: '/login'
         },
         {
             path: '/home',
@@ -57,6 +55,7 @@ const router = createRouter({
         }
     ]
 })
+
 router.beforeEach((to, from, next) => {
     if (to.meta.requiresAuth && !store.state.isAuthenticated) {
         next('/login')
