@@ -59,8 +59,7 @@ export default {
   methods:{
     async create(){
       this.book.userProfileId = this.profile.id
-      const response = await this.bookService.create(this.book);
-      const bookId = response.data.id;
+      await this.bookService.create(this.book);
       this.toPublish();
     },
     toPublish(){
