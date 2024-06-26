@@ -22,7 +22,8 @@
                 <label>Confirm password:</label>
                 <input type="password" v-model="confirmPassword" required />
             </div>
-            <button type="submit" class="register-button">Register</button>
+          <p class="error-message" v-if="errorMessage">{{ errorMessage }}</p>
+          <button type="submit" class="register-button">Register</button>
         </form>
     </div>
 </template>
@@ -43,7 +44,8 @@ export default {
             name: "",
             userId: "",
           },
-          confirmPassword: ""
+          confirmPassword: "",
+          errorMessage: "",
         };
     },
     async created() {
@@ -54,6 +56,14 @@ export default {
       async register() {
         if (this.user.password !== this.confirmPassword) {
           alert("Passwords don't match");
+          return;
+        }
+        const profiles = await this.profileService.getAll();
+        const profileExists = profiles.data.some(
+            profile => profile.name.toLowerCase() === this.userProfile.name.toLowerCase()
+        );
+        if (profileExists) {
+          this.errorMessage = ("Username already exists. Please choose another.");
           return;
         }
         await this.userService.create(this.user)
