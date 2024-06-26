@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const http = axios.create({
-    baseURL: 'http://localhost:8080/api/v1/',
+    baseURL: 'https://read-owo-backend.azurewebsites.net/api/v1/',
     header: {}
 });
 
