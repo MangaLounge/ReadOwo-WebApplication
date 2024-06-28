@@ -11,14 +11,23 @@
             <th><p>PHOTO</p></th>
             <th><p>TITLE</p></th>
             <th><p>PUBLICATION DATE</p></th>
+            <th><p>WRITE</p></th>
+            <th><p>VIEWS</p></th>
             <th><p>ACTIONS</p></th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(book, index) in publishedBooks" :key="index">
-            <td><img class="img-container" :src="book.booksImage" :alt="book.booksTitle" @click="showBookInfo(book)"></td>
-            <td>{{ book.booksTitle }}</td>
-            <td>{{ book.booksDate }}</td>
+          <tr v-for="(book, index) in filteredbooks" :key="index">
+            <td><img class="img-container" :src="book.thumbnailUrl" :alt="book.title" @click="showBookInfo(book)"></td>
+            <td>{{ book.title }}</td>
+            <td>{{ book.publishedAt }}</td>
+            <td>
+              <pv-button
+                  aria-label="Edit" icon="pi pi-pencil" class="p-button-text p-button-rounded" size="large"
+                  @click="editBookText(book)"
+              />
+            </td>
+            <td>{{book.visitCount}}</td>
             <td>
               <pv-button
                   aria-label="Erase" icon="pi pi-trash" class="p-button-text p-button-rounded" size="large"
@@ -37,17 +46,18 @@ import { mapState } from "vuex";
 
 export default {
     name: "your-artwork",
-    computed: { ...mapState(['profile', 'isAuthenticated']) },
     data() {
         return {
             publishedBooks: [],
-            book:{
-              booksId: "",
-                booksImage: "",
-                booksTitle: "",
-                booksDate: "",
-            }
         };
+    },
+    computed: {
+      ...mapState(['profile', 'isAuthenticated']),
+      filteredbooks(){
+        return this.publishedBooks.filter(
+            (book)=>this.profile.id===book.userProfile.id
+        );
+      },
     },
     async created() {
         this.bookService = new BookService();
@@ -56,35 +66,26 @@ export default {
     methods: {
         async getPublishedBooks() {
           let responseBook = await this.bookService.getAll();
+          this.publishedBooks = responseBook.data;
           console.log("Response from BookService:", responseBook);
-          for (let bookAux of responseBook.data) {
-                if (this.profile.id === bookAux.userProfile.id) {
-                  console.log("Book belongs to user:", bookAux);
-                    this.book = {
-                        booksId : bookAux.id,
-                        booksImage: bookAux.thumbnailUrl,
-                        booksTitle: bookAux.title,
-                        booksDate: bookAux.publishedAt
-                    };
-                    this.publishedBooks.push(this.book);
-                  console.log("Filtered books for user:", this.publishedBooks);
-                }
-            }
         },
         showBookInfo(book) {
           this.$router.push({ name: 'book-item', params: { id: book.id } });
         },
         async deleteBook(book){
           const bookService = new BookService();
-          await bookService.delete(book.booksId);
-          const index = this.publishedBooks.findIndex(b => b.booksId === book.booksId);
+          await bookService.delete(book.book.id);
+          const index = this.publishedBooks.findIndex(b => b.id === book.id);
           if (index !== -1) {
             this.publishedBooks.splice(index, 1);
           }
         },
         saveBook(){
             this.$router.push({name: 'create'});
-        }
+        },
+      editBookText(book) {
+        this.$router.push({ name: 'write', params: { id: book.id } });
+      }
     }
 }
 </script>

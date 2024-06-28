@@ -1,16 +1,16 @@
 <template>
     <div>
-        <h1>TOP POST THIS WEEK</h1>
+        <h1>TOP POSTS THIS WEEK</h1>
         <article-card-component v-if="books.length > 0" :booksCard="books"></article-card-component>
     </div>
     <div>
-        <h1>What You May Like</h1>
+        <h1>Best Sellers</h1>
         <div class="article-container">
             <ul>
-                <li v-for="(book, index) in books.slice(0, 5)" :key="book.id">
-                    <p class="book-title">{{ book.title }}</p>
-                    <img class="img-container" :src="book.thumbnailUrl" :alt="book.title" @click="this.showBookInfo(book)">
-                </li>
+              <li v-for="(book, index) in books.slice(0, 5).sort((a, b) => b.visitCount - a.visitCount)" :key="book.id">
+                <p class="book-title">{{ book.title }}</p>
+                <img class="img-container" :src="book.thumbnailUrl" :alt="book.title" @click="showBookInfo(book)">
+              </li>
             </ul>
         </div>
     </div>
@@ -26,17 +26,19 @@ export default {
     data() {
         return {
             books: [],
+            searchQuery: "",
         };
     },
     async created() {
         this.bookService = new BookService();
         let response = await this.bookService.getAll();
         this.books = response.data;
+
     },
     methods:{
         showBookInfo(book) {
             this.$router.push({ name: 'book-item', params: { id: book.id } });
-        }
+        },
     }
 }
 </script>
@@ -48,6 +50,10 @@ export default {
 h1{
     text-align: center;
     font-family: Arial, sans-serif;
+}
+.search-bar {
+  margin-bottom: 20px;
+  text-align: center;
 }
 .article-container{
     display: flex;
