@@ -52,6 +52,24 @@ const router = createRouter({
             name: "create",
             component: ()=>import("./publish/components/create.vue"),
             meta: { requiresAuth: true}
+        },
+        {
+            path: "/write",
+            name: "write",
+            component: ()=>import("./publish/components/write.component.vue"),
+            meta: { requiresAuth: true}
+        },
+        {
+            path: "/read",
+            name: "read",
+            component: ()=>import("./publish/components/read.component.vue"),
+            meta: { requiresAuth: true}
+        },
+        {
+            path: "/edit-profile",
+            name: "edit-profile",
+            component: ()=>import("./authentication/components/edit-profile.component.vue"),
+            meta: { requiresAuth: true}
         }
     ]
 })
