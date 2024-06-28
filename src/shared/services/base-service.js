@@ -13,7 +13,7 @@ export class HttpService {
     }
 
     getById(id) {
-        return http.get(`${this.baseGet}/${id}?bookId=${id}`);
+        return http.get(`${this.baseGet}/${id}`);
     }
 
     create(data) {
