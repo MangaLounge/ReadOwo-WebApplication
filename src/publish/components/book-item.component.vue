@@ -4,8 +4,13 @@
         <div class="content">
             <img class="image" :src="bookData.thumbnailUrl" :alt="bookData.title">
             <div class="synopsis">
+              <h3>AUTHOR: </h3>
+              {{ bookData.userProfile.name }}
               <h3>SYNOPSIS: </h3>
               {{ bookData.synopsis }}
+              <div class="read-button">
+                <pv-button @click="readBook" class="p-button p-button-rounded p-button-success">READ</pv-button>
+              </div>
             </div>
         </div>
     </div>
@@ -27,6 +32,9 @@ export default {
         this.bookData=responseBook.data;
     },
     methods:{
+      readBook() {
+        this.$router.push({ name: 'read', params: { id: this.bookData.id } });
+      }
     }
 }
 </script>
@@ -55,5 +63,8 @@ h1{
 .image{
     width: 300px;
     height: 400px;
+}
+.read-button {
+  margin-top: 20px;
 }
 </style>
